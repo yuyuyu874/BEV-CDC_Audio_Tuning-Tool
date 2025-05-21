@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+node HostPC{
+    rectangle AWEEngine
+    rectangle AWEServer
+}
+
+node SA8255 {
+    rectangle LV {
+        Package socat
+    }
+    rectangle QNX {
+        Package TuningProxy
+    }
+}
+
+node HexagonDSP {
+    Package ASCEngine {
+        rectangle AWEInstance
+    }
+}
+
+
+AWEServer -[hidden]- socat
+TuningProxy -[hidden]- AWEInstance
+
+@enduml

@@ -3,7 +3,7 @@
 ## 改訂履歴
 | 改訂日 | 版数 | 変更内容 | 担当 | 工程チケットID |
 |-|-|-|-|-|
-| 2025/5/21 | v1.0 | 初版作成 | DTEN後藤 | [BEVIVIPRC-17365BEVIVIPRC-17365](https://jira.geniie.net/browse/BEVIVIPRC-17370)
+| 2025/5/21 | v1.0 | 初版作成 | DTEN後藤 | [BEVIVIPRC-17365](https://jira.geniie.net/browse/BEVIVIPRC-17370)
 
 ## 目次
 1. [機能概要・変更点](#1-機能概要変更点)
@@ -20,28 +20,49 @@
 ASC機能における ASC Engine で生成される走行サウンドを外部からチューニングする機能について、システム構成を定義する。
 
 #### 適用範囲
-| | |
-|---|---|
-| 機種 | BEV Step3 CDC |
-| 仕向け | 全仕向け Debug版ソフトのみ | 
-| マイルストーン | CV |
-| 機能分類 | ASC HAL |
+
+<table>
+    <tr>
+        <td>機種</td>
+        <td>BEV Step3 CDC</td>
+    </tr>
+    <tr>
+        <td>仕向け</td>
+        <td>全仕向け Debug版ソフトのみ</td>
+    </tr>
+    <tr>
+        <td>マイルストーン</td>
+        <td>CV</td>
+    </tr>
+    <tr>
+        <td>機能分類</td>
+        <td>ASC HAL</td>
+    </tr>
+</table>
 
 #### 用語説明
-|||
-|-|-|
-| ASC (Active Sound Control) | 車速、アクセル開度、トルク等車両の走行状態に応じて音源データの音量ピッチを変更し、車載スピーカーから再生することで心地よい走行サウンドを提供する機能。|
-|ASC Engine | 走行サウンドを生成する Engine。24MMでは外部ECUが搭載されていたが、BEV Step3 CDC では内部モジュールとして DSP上に搭載される。
+
+<table>
+    <tr>
+        <td>ASC (Active Sound Control)</td>
+        <td>車速、アクセル開度、トルク等車両の走行状態に応じて音源データの音量ピッチを変更し、車載スピーカーから再生することで心地よい走行サウンドを提供する機能。</td>
+    </tr>
+    <tr>
+        <td>ASC Engine</td>
+        <td>走行サウンドを生成する Engine。24MMでは外部ECUが搭載されていたが、BEV Step3 CDC では内部モジュールとして DSP上に搭載される。</td>
+    </tr>
+</table>
+
 
 #### 関連資料
 
 #### ターゲット
-- Qualcomm SA8255P
+- Qualcomm SA8255
 - x86-64
 
 
 ### 1-2. 母体
-DSP Concept(以後 DSPC と呼称) 提供のチューニングツールを母体とする。
+DSP Concept社提供のチューニングツールを母体とする。
 ![base-soft.png](images/base-soft.png)
 
 ### 1-3. 変化点およびソフト変更概要、設計方針
@@ -57,7 +78,7 @@ QNX および LV に開放されていた USB port が LV のみの開放へ変�
 を満たすように、ソフトを構成する。
 
 #### 設計方針
-DTPC 提供のチューニングツールを基に、PC ⇔ LV ⇔ QNX ⇔ ASC Engine とコマンドを送受信するためのソフトウェア構成を定義する。また、LV ⇔ QNX 間の通信ついては QCD などの観点から `socat`という OSS を活用する。
+本設計書では、DSPC 提供のチューニングツールを基に、PC ⇔ LV ⇔ QNX ⇔ ASC Engine とコマンドを送受信するためのソフトウェア構成を定義する。また、LV ⇔ QNX 間の通信ついては QCD などの観点から `socat`という OSS を活用する。
 
 
 ### 1-4. 異常検知時のリカバリ方針
@@ -65,10 +86,36 @@ DTPC 提供のチューニングツールを基に、PC ⇔ LV ⇔ QNX ⇔ ASC E
 
 [204.01.01. 230915_Tie1内Service異常終了時の方針](https://wiki.geniie.net/pages/viewpage.action?pageId=1115850958)
 
-## 2. WT図
+## 2. ソフトウェア構成図
+```plantuml
+@startuml
+left to right direction
+node HostPC{
+    rectangle AWEEngine
+    rectangle AWEServer
+}
+
+node SA8255 {
+    rectangle LV {
+        Package socat
+    }
+    rectangle QNX {
+        Package TuningProxy
+    }
+}
+
+node HexagonDSP {
+    Package ASCEngine {
+        rectangle AWEInstance
+    }
+}
 
 
-## 3. ソフトウェア構成図
+AWEServer -[hidden]- socat
+TuningProxy -[hidden]- AWEInstance
+
+@enduml
+```
 
 ## 4. シーケンス図
 
