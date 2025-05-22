@@ -1,0 +1,27 @@
+@startuml
+left to right direction
+node "Host PC" as PC{
+    rectangle "AWE Designer" as engine
+    rectangle "AWE Server" as server
+}
+
+node "SA8255" as SoC {
+    rectangle "LV" {
+        Package "socat"
+    }
+    rectangle "QNX" {
+        Package "Tuning-Proxy" as proxy
+    }
+}
+
+node "Hexagon DSP" {
+    Package "ASCEngine" {
+        rectangle "AWE Instance" as instance
+    }
+}
+
+
+server -[hidden]- socat
+proxy -[hidden]- instance
+
+@enduml

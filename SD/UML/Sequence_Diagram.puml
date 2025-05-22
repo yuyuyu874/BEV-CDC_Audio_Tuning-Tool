@@ -1,0 +1,40 @@
+@startuml
+
+activate "AWE Designer"
+"AWE Designer" -> "AWE Server" : "Tuning Command"
+
+activate "AWE Server"
+"AWE Server" -> "socat" : "Tuning Command"
+deactivate "AWE Server"
+
+activate "socat"
+"socat" -> "Tuning-Proxy" : "Tuning Command"
+deactivate "socat"
+
+activate "Tuning-Proxy"
+"Tuning-Proxy" -> "AWE Instance" : "Tuning Command"
+
+activate "AWE Instance"
+"AWE Instance" -> "ASC Engine"
+
+activate "ASC Engine"
+"ASC Engine" -> "AWE Instance"
+deactivate "ASC Engine"
+
+"AWE Instance" -> "Tuning-Proxy" : return
+deactivate "AWE Instance"
+
+"Tuning-Proxy" -> "socat" : return
+deactivate "Tuning-Proxy"
+
+activate "socat"
+"socat" -> "AWE Server" : return
+deactivate "socat"
+
+activate "AWE Server"
+"AWE Server" -> "AWE Designer" : return
+deactivate "AWE Server"
+deactivate "AWE Designer"
+
+
+@enduml

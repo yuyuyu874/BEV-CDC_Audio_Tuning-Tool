@@ -58,11 +58,10 @@ ASC機能における ASC Engine で生成される走行サウンドを外部�
 
 #### ターゲット
 - Qualcomm SA8255
-- x86-64
 
 
 ### 1-2. 母体
-DSP Concept社提供のチューニングツールを母体とする。
+DSP Concept社（以下 DSPC）提供のチューニングツールを母体とする。
 ![base-soft.png](images/base-soft.png)
 
 ### 1-3. 変化点およびソフト変更概要、設計方針
@@ -87,36 +86,20 @@ QNX および LV に開放されていた USB port が LV のみの開放へ変�
 [204.01.01. 230915_Tie1内Service異常終了時の方針](https://wiki.geniie.net/pages/viewpage.action?pageId=1115850958)
 
 ## 2. ソフトウェア構成図
-```plantuml
-@startuml
-left to right direction
-node HostPC{
-    rectangle AWEEngine
-    rectangle AWEServer
-}
 
-node SA8255 {
-    rectangle LV {
-        Package socat
-    }
-    rectangle QNX {
-        Package TuningProxy
-    }
-}
+@import "/SD/UML/SW_Deployment_Diagram.puml"
 
-node HexagonDSP {
-    Package ASCEngine {
-        rectangle AWEInstance
-    }
-}
+|モジュール名| 機能 | 素性 | 備考 |
+|-|-|-|-|
+|AWE Designer||DSPC 提供
+|AWE Server||DSPC 提供|
+|socat||OSS
+|Tuning-Proxy||DSPC 提供
+|ASC Engine||DSPC 提供
 
+## 3. シーケンス図
+### 3-1. 起動シーケンス
 
-AWEServer -[hidden]- socat
-TuningProxy -[hidden]- AWEInstance
+### 3-2. Tuning Command 送信時
+@import "UML/Sequence_Diagram.puml"
 
-@enduml
-```
-
-## 4. シーケンス図
-
-## 5. インターフェース仕様
